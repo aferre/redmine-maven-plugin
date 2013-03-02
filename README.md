@@ -5,10 +5,10 @@ Maven plugin for redmine REST API, using https://github.com/taskadapter/redmine-
 
 
 Configuration:
-              <hostUrl>...</hostUrl>
-							<projectId>...</projectId>
-							<apiKey>...</apiKey>
-              
+<hostUrl> ... </hostUrl>"
+<projectId>...</projectId>
+<apiKey>...</apiKey>
+
 Examples:
 
 <plugin>
