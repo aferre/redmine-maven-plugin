@@ -5,9 +5,9 @@ Maven plugin for redmine REST API, using https://github.com/taskadapter/redmine-
 
 
 Configuration:
-              <hostUrl>http://redmine.saic.int</hostUrl>
-							<projectId>g2-station</projectId>
-							<apiKey>dac83154a75360d8fced5ce29f3941ec281cc17f</apiKey>
+              <hostUrl>...</hostUrl>
+							<projectId>...</projectId>
+							<apiKey>...</apiKey>
               
 Examples:
 
