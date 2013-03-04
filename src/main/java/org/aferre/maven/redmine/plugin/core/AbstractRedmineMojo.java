@@ -26,6 +26,16 @@ public abstract class AbstractRedmineMojo extends AbstractMojo {
 	 */
 	protected String apiKey;
 
+	/**
+	 * @parameter expression="${dryRun}" default-value="false"
+	 */
+	protected Boolean dryRun;
+
+	/**
+	 * @parameter expression="${redmine.abortOnError}" default-value="true"
+	 */
+	protected Boolean abortOnError;
+
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		if (getLog().isInfoEnabled()) {
