@@ -66,22 +66,23 @@ public class Utils {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("Project Name : ");
 		stringBuilder.append(issue.getName());
-		stringBuilder.append(", CreatedOn : ");
-		stringBuilder.append(issue.getCreatedOn());
-		stringBuilder.append(", Description : ");
-		stringBuilder.append(issue.getDescription());
-		stringBuilder.append(", Homepage : ");
-		stringBuilder.append(issue.getHomepage());
-		stringBuilder.append(", Id : ");
-		stringBuilder.append(issue.getId());
 		stringBuilder.append(", Identifier : ");
 		stringBuilder.append(issue.getIdentifier());
+		stringBuilder.append(", Id : ");
+		stringBuilder.append(issue.getId());
+		stringBuilder.append(", Description : ");
+		stringBuilder.append(issue.getDescription());
+		stringBuilder.append(", CreatedOn : ");
+		stringBuilder.append(issue.getCreatedOn());
+		stringBuilder.append(", Homepage : ");
+		stringBuilder.append(issue.getHomepage());
 		stringBuilder.append(", ParentId : ");
 		stringBuilder.append(issue.getParentId());
 		stringBuilder.append(", Trackers : [");
+if (issue.getTrackers() != null){
 		for (Tracker tracker : issue.getTrackers()) {
 			stringBuilder.append(Utils.toString(tracker) + ",");
-		}
+		}}
 		stringBuilder.append("], UpdatedOn : ");
 		stringBuilder.append(issue.getUpdatedOn());
 		return stringBuilder.toString();
