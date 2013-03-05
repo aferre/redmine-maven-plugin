@@ -19,6 +19,7 @@ public abstract class AbstractRedmineMojo extends AbstractMojo {
 	protected MavenProject mavenProject;
 	/**
 	 * @parameter expression="${redmine.hostUrl}"
+	 * @required
 	 */
 	protected URL hostUrl;
 	/**
@@ -28,18 +29,30 @@ public abstract class AbstractRedmineMojo extends AbstractMojo {
 
 	/**
 	 * @parameter expression="${dryRun}" default-value="false"
+	 * @required
 	 */
 	protected Boolean dryRun;
 
 	/**
 	 * @parameter expression="${redmine.abortOnError}" default-value="true"
+	 * @required
 	 */
 	protected Boolean abortOnError;
+
+	/**
+	 * @parameter expression="${redmine.projectId}"
+	 */
+	protected String projectId;
 
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		if (getLog().isInfoEnabled()) {
-			getLog().info("Using host url " + hostUrl);
+			getLog().info("Redmine Host url: " + hostUrl);
+			getLog().info("Redmine porject identifier: " + projectId);
+			getLog().info("DryRun: " + dryRun);
+			if (apiKey != null)
+				getLog().info("Using apikey for authentication.");
+			getLog().info("AbortOnError: " + abortOnError);
 		}
 	}
 }

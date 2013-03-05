@@ -20,10 +20,6 @@ import com.taskadapter.redmineapi.bean.Issue;
 public class ListIssuesMojo extends AbstractRedmineMojo {
 
 	/**
-	 * @parameter expression="${list-issues.projectId}"
-	 */
-	protected String projectId;
-	/**
 	 * @parameter expression="${list-issues.allVersions}"
 	 */
 	protected Boolean allVersions;
@@ -34,24 +30,18 @@ public class ListIssuesMojo extends AbstractRedmineMojo {
 
 	private static Integer queryId = null; // any
 
-	private static void tryGetIssues(RedmineManager mgr, String projectId)
-			throws Exception {
-		List<Issue> issues = mgr.getIssues(projectId, queryId);
-		for (Issue issue : issues) {
-			System.out.println(issue.toString());
-		}
-	}
-
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		super.execute();
-		if (getLog().isInfoEnabled()) {
-			getLog().info("Using projectId " + projectId);
-		}
-
 		RedmineManager mgr = new RedmineManager(hostUrl.toString(), apiKey);
 
 		try {
-			tryGetIssues(mgr, projectId);
+			List<Issue> issues = mgr.getIssues(projectId, queryId);
+			if (issues.size() == 0) {
+				getLog().info("No issues for this project.");
+			}
+			for (Issue issue : issues) {
+				System.out.println(issue.toString());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

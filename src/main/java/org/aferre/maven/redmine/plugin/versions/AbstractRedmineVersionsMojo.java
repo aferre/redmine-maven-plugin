@@ -13,17 +13,13 @@ import com.taskadapter.redmineapi.bean.Project;
 import com.taskadapter.redmineapi.bean.Version;
 
 public abstract class AbstractRedmineVersionsMojo extends AbstractRedmineMojo {
-	
+
 	/**
-	 * @parameter expression="${list-versions.projectId}"
-	 */
-	protected String projectId;
-	/**
-	 * @parameter expression="${list-versions.projectIds}"
+	 * @parameter expression="${redmine..projectIds}"
 	 */
 	protected String[] projectIds;
 	/**
-	 * @parameter expression="${list-versions.all}"
+	 * @parameter expression="${redmine..allProjects}"
 	 */
 	protected Boolean all;
 
@@ -35,18 +31,25 @@ public abstract class AbstractRedmineVersionsMojo extends AbstractRedmineMojo {
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		super.execute();
 		if (getLog().isInfoEnabled()) {
-			getLog().info("Using projectId " + projectId);
+			if (projectIds != null)
+				getLog().info("Using projectIds " + projectIds);
+			else if (all)
+				getLog().info("Using all projects.");
+			else if (projectId != null)
+				getLog().info("Using projectId " + projectId);
 		}
 	}
 
 	protected List<Version> getVersions(RedmineManager mgr, Project project)
 			throws RedmineException {
 		List<Version> versions = mgr.getVersions(project.getId());
-		System.out.println("**************");
-		System.out.println("Project " + project.getName());
-		System.out.println("Versions are \n");
-		for (Version version : versions) {
-			Utils.printVersion(version);
+		if (getLog().isInfoEnabled()) {
+			getLog().info("**************");
+			getLog().info("Project " + project.getName());
+			getLog().info("Versions are \n");
+			for (Version version : versions) {
+				getLog().info(Utils.toString(version));
+			}
 		}
 		return versions;
 	}

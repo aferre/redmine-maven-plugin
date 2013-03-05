@@ -21,7 +21,7 @@ import com.taskadapter.redmineapi.bean.Version;
 public class CreateVersionsMojo extends AbstractRedmineVersionsMojo {
 	/**
 	 * @parameter default-value="${project.version}"
-	 *            expression="${versionToBeCreated}"
+	 *            expression="${redmine.versionToBeCreated}"
 	 */
 	public String version;
 
@@ -29,7 +29,7 @@ public class CreateVersionsMojo extends AbstractRedmineVersionsMojo {
 		super.execute();
 
 		RedmineManager mgr = new RedmineManager(hostUrl.toString(), apiKey);
-		
+
 		if (projectIds != null && projectIds.length != 0) {
 			if (getLog().isInfoEnabled()) {
 				getLog().info("Retrieving versions for projects " + projectIds);
@@ -45,9 +45,7 @@ public class CreateVersionsMojo extends AbstractRedmineVersionsMojo {
 			}
 
 		} else if (projectId != null) {
-			if (getLog().isInfoEnabled()) {
-				getLog().info("Retrieving versions for project " + projectId);
-			}
+
 			try {
 				createVersion(mgr, projectId);
 			} catch (Exception e) {
@@ -66,6 +64,11 @@ public class CreateVersionsMojo extends AbstractRedmineVersionsMojo {
 
 	private void createVersion(RedmineManager mgr, String projectName)
 			throws RedmineException {
+		if (getLog().isInfoEnabled()) {
+			getLog().info(
+					"Trying to create version " + version + " for project "
+							+ projectName);
+		}
 		Project project = mgr.getProjectByKey(projectName);
 		List<Version> versions = getVersions(mgr, project);
 		Version known = null;

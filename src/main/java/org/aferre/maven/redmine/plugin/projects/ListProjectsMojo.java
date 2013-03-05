@@ -2,6 +2,7 @@ package org.aferre.maven.redmine.plugin.projects;
 
 import java.util.List;
 
+import org.aferre.maven.redmine.plugin.core.AbstractRedmineMojo;
 import org.aferre.maven.redmine.plugin.core.Utils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -17,7 +18,7 @@ import com.taskadapter.redmineapi.bean.Project;
  * @phase install
  */
 @Mojo(name = "list-projects")
-public class ListProjectsMojo extends AbstractRedmineProjectMojo {
+public class ListProjectsMojo extends AbstractRedmineMojo {
 
 	public void execute() throws MojoExecutionException {
 
@@ -26,7 +27,7 @@ public class ListProjectsMojo extends AbstractRedmineProjectMojo {
 		try {
 			List<Project> projects = mgr.getProjects();
 			for (Project issue : projects) {
-				Utils.printProject(issue);
+				getLog().info(Utils.toString(issue));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

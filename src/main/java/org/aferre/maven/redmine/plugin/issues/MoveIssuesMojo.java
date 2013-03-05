@@ -23,38 +23,36 @@ import com.taskadapter.redmineapi.bean.Version;
 public class MoveIssuesMojo extends AbstractRedmineMojo {
 
 	/**
-	 * @parameter expression="${list-issues.projectId}"
-	 * @required true
-	 */
-	protected String projectId;
-	/**
-	 * @parameter default-value="true"
-	 *            expression="${list-issues.allLowerVersions}"
+	 * @parameter default-value="true" expression="${redmine..allLowerVersions}"
 	 */
 	protected Boolean allLowerVersions;
 	/**
-	 * @parameter expression="${fromVersion}"
+	 * @parameter expression="${redmine.fromVersion}"
 	 **/
 	protected String fromVersion;
 	/**
-	 * @parameter default-value="${project.version}" expression="${toVersion}"
+	 * @parameter default-value="${project.version}"
+	 *            expression="${redmine.toVersion}"
 	 * @required true
 	 **/
 	protected String toVersion;
 
-	private static Integer queryId = null; // any
-
-	private static void tryGetIssues(RedmineManager mgr, String projectId)
-			throws Exception {
-		List<Issue> issues = mgr.getIssues(projectId, queryId);
-		for (Issue issue : issues) {
-			System.out.println(issue.toString());
-		}
-
-	}
+	private static Integer queryId = null;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		super.execute();
+
+		if (projectId == null) {
+			if (getLog().isErrorEnabled()) {
+				getLog().error(
+						"You have to provide a projectId. Please dfine the property redmine.projectId");
+			}
+			if (abortOnError) {
+
+			} else
+				return;
+		}
+
 		if (getLog().isInfoEnabled()) {
 			getLog().info("Using projectId " + projectId);
 		}

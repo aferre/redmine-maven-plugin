@@ -79,16 +79,17 @@ public class Utils {
 		stringBuilder.append(", ParentId : ");
 		stringBuilder.append(issue.getParentId());
 		stringBuilder.append(", Trackers : [");
-if (issue.getTrackers() != null){
-		for (Tracker tracker : issue.getTrackers()) {
-			stringBuilder.append(Utils.toString(tracker) + ",");
-		}}
+		if (issue.getTrackers() != null) {
+			for (Tracker tracker : issue.getTrackers()) {
+				stringBuilder.append(Utils.toString(tracker) + ",");
+			}
+		}
 		stringBuilder.append("], UpdatedOn : ");
 		stringBuilder.append(issue.getUpdatedOn());
 		return stringBuilder.toString();
 	}
 
-	public static void printuser(User user) {
+	public static void printUser(User user) {
 		System.out.println("FullName : " + user.getFullName());
 		System.out.println("CreatedOn : " + user.getCreatedOn());
 		System.out.println("Login : " + user.getLogin());

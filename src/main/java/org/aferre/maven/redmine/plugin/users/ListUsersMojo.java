@@ -28,7 +28,7 @@ public class ListUsersMojo extends AbstractRedmineMojo {
 		try {
 			List<User> users = mgr.getUsers();
 			for (User user : users) {
-				Utils.printuser(user);
+				Utils.printUser(user);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

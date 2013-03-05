@@ -1,9 +1,10 @@
 package org.aferre.maven.redmine.plugin.projects;
 
+import org.aferre.maven.redmine.plugin.core.AbstractRedmineMojo;
 import org.aferre.maven.redmine.plugin.core.Utils;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.project.MavenProject;
 
 import com.taskadapter.redmineapi.NotFoundException;
 import com.taskadapter.redmineapi.RedmineAuthenticationException;
@@ -17,15 +18,23 @@ import com.taskadapter.redmineapi.bean.Project;
  * 
  */
 @Mojo(name = "create-project")
-public class CreateProjectMojo extends AbstractRedmineProjectMojo {
-	
-	public void execute() throws MojoExecutionException {
+public class CreateProjectMojo extends AbstractRedmineMojo {
 
+	public void execute() throws MojoExecutionException, MojoFailureException {
+		super.execute();
 		RedmineManager mgr = new RedmineManager(hostUrl.toString(), apiKey);
+		if (projectId == null) {
+			if (getLog().isErrorEnabled()) {
+				getLog().error(
+						"You have to provide a projectId. Please dfine the property redmine.projectId");
+			}
+			if (abortOnError) {
 
+			} else
+				return;
+		}
 		try {
 			Project projectByKey = null;
-
 			try {
 				projectByKey = mgr.getProjectByKey(projectId);
 			} catch (NotFoundException e) {
@@ -40,15 +49,13 @@ public class CreateProjectMojo extends AbstractRedmineProjectMojo {
 					getLog().debug(Utils.toString(projectByKey));
 				}
 			} else {
-				if (getLog().isDebugEnabled()) {
-					getLog().debug("Creating project with configuration:");
-				}
 				Project project = new Project();
 				project.setIdentifier(projectId);
 				project.setName(mavenProject.getName());
 				project.setDescription(mavenProject.getDescription());
 				project.setHomepage(mavenProject.getUrl());
 				if (getLog().isDebugEnabled()) {
+					getLog().debug("Creating project with configuration:");
 					getLog().debug(Utils.toString(project));
 				}
 				Project ret = mgr.createProject(project);
