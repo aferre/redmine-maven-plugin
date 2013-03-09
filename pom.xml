@@ -5,6 +5,18 @@
 	<packaging>maven-plugin</packaging>
 	<version>0.0.1</version>
 	<name>redmine-maven-plugin Maven Mojo</name>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<scm>
+		<connection>scm:git:git@github.com:aferre/redmine-maven-plugin.git</connection>
+		<url>scm:git:git@github.com:aferre/redmine-maven-plugin.git</url>
+		<developerConnection>scm:git:git@github.com:aferre/redmine-maven-plugin.git</developerConnection>
+	</scm>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.6</java.version>
@@ -21,13 +33,6 @@
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>
-	<repositories>
-		<repository>
-			<id>mojo-executor-repository</id>
-			<name>Mojo Executor Repository for Maven</name>
-			<url>http://twdata-m2-repository.googlecode.com/svn/</url>
-		</repository>
-	</repositories>
 	<build>
 		<plugins>
 			<plugin>
