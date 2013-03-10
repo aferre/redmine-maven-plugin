@@ -4,13 +4,19 @@ maven-redmine-plugin
 Maven plugin for redmine REST API, using https://github.com/taskadapter/redmine-java-api
 
 
-Configuration:
-<hostUrl> ... </hostUrl>"
-<projectId>...</projectId>
-<apiKey>...</apiKey>
+Necessary configuration for all plugins:
+```
+<redmine.hostUrl>...</redmine.hostUrl>
+<redmine.apiKey>...</redmine.apiKey>
+```
+
+It's a good thing to have the following property defined for a project tied to redmine (redmine project identifier).
+```
+<redmine.projectId>...</redmine.projectId>
+```
 
 Examples:
-
+```
 <plugin>
   			<groupId>org.aferre</groupId>
 				<artifactId>maven-redmine-plugin</artifactId>
@@ -30,7 +36,7 @@ Examples:
 					</execution>
 				</executions>
 			</plugin>
-      
+```
 Prints projects:
 
 Prints versions:
