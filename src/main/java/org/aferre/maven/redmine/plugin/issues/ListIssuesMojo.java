@@ -3,6 +3,7 @@ package org.aferre.maven.redmine.plugin.issues;
 import java.util.List;
 
 import org.aferre.maven.redmine.plugin.core.AbstractRedmineMojo;
+import org.aferre.maven.redmine.plugin.core.Utils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -40,7 +41,7 @@ public class ListIssuesMojo extends AbstractRedmineMojo {
 				getLog().info("No issues for this project.");
 			}
 			for (Issue issue : issues) {
-				System.out.println(issue.toString());
+				getLog().info(Utils.toString(issue));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

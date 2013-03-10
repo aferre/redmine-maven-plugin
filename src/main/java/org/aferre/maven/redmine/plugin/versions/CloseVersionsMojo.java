@@ -1,11 +1,13 @@
 package org.aferre.maven.redmine.plugin.versions;
 
+import java.net.URL;
 import java.util.List;
 
 import org.aferre.maven.redmine.plugin.core.Utils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.project.MavenProject;
 
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
@@ -20,6 +22,20 @@ import com.taskadapter.redmineapi.bean.Version;
  */
 @Mojo(name = "close-versions")
 public class CloseVersionsMojo extends AbstractRedmineVersionsMojo {
+	
+	protected CloseVersionsMojo() {
+		super();
+	}
+
+	protected CloseVersionsMojo(MavenProject mavenProject, URL hostUrl,
+			String apiKey, Boolean dryRun, Boolean abortOnError,
+			String projectId, Boolean interactive, String[] projectIds,
+			Boolean all) {
+		super(mavenProject, hostUrl, apiKey, dryRun, abortOnError, projectId,
+				interactive, projectIds, all);
+		// TODO Auto-generated constructor stub
+	}
+
 	/**
 	 * @parameter default-value="${project.version}"
 	 *            expression="${redmine.versionToBeClosed}"
@@ -49,7 +65,6 @@ public class CloseVersionsMojo extends AbstractRedmineVersionsMojo {
 			for (String projectName : projectIds) {
 				try {
 					closeVersion(mgr, projectName);
-
 				} catch (Exception e) {
 					if (getLog().isErrorEnabled()) {
 						getLog().error(e.getMessage());

@@ -1,5 +1,6 @@
 package org.aferre.maven.redmine.plugin.projects;
 
+import java.io.Console;
 import java.util.List;
 
 import org.aferre.maven.redmine.plugin.core.AbstractRedmineMojo;
@@ -23,14 +24,27 @@ public class VerifyProjectMojo extends AbstractRedmineMojo {
 
 	private Project currentProject;
 
-	private Boolean createIfNotExisting;
+	/**
+	 * @parameter default-value="${project}"
+	 *            expression="${redmine.createProjectIfNotExisting}"
+	 */
+	private Boolean createProjectIfNotExisting;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		super.execute();
 		if (projectId == null) {
 			if (getLog().isErrorEnabled()) {
 				getLog().error(
-						"You have to provide a projectId. Please dfine the property redmine.projectId");
+						"You have to provide a projectId. Please define the property redmine.projectId");
+			}
+			if (interactive) {
+				Console console = System.console();
+				String input = console.readLine("Enter projectId:");
+				if (input.isEmpty()) {
+
+				} else {
+					projectId = input;
+				}
 			}
 			if (abortOnError) {
 
@@ -41,9 +55,9 @@ public class VerifyProjectMojo extends AbstractRedmineMojo {
 
 		try {
 			List<Project> projects = mgr.getProjects();
-			for (Project issue : projects) {
-				if (issue.getIdentifier().equals(this.projectId)) {
-					currentProject = issue;
+			for (Project prj : projects) {
+				if (prj.getIdentifier().equals(this.projectId)) {
+					currentProject = prj;
 					break;
 				}
 			}
@@ -54,7 +68,38 @@ public class VerifyProjectMojo extends AbstractRedmineMojo {
 									+ Utils.toString(currentProject));
 				}
 			} else {
+				if (getLog().isDebugEnabled()) {
+					getLog().debug("Project has not been found.");
+				}
+				if (createProjectIfNotExisting) {
+					if (interactive) {
+						Console console = System.console();
+						String input = console
+								.readLine("Do you want to create the project (y/n)?");
+						if (input.isEmpty() || input.equals("y")) {
+							if (getLog().isDebugEnabled()) {
+								getLog().debug("Creating project:" + projectId);
+							}
+							CreateProjectMojo mj = new CreateProjectMojo(
+									(AbstractRedmineMojo) this);
 
+							mj.createProject(mgr, projectId);
+						} else if (input.equals("n")) {
+							return;
+						} else {
+							return;
+						}
+					} else {
+						if (getLog().isDebugEnabled()) {
+							getLog().debug("Creating project:" + projectId);
+						}
+						CreateProjectMojo mj = new CreateProjectMojo(
+								(AbstractRedmineMojo) this);
+
+						mj.createProject(mgr, projectId);
+					}
+
+				}
 			}
 		} catch (Exception e) {
 			// if (getLog().isErrorEnabled())

@@ -2,6 +2,7 @@ package org.aferre.maven.redmine.plugin.core;
 
 import org.apache.maven.project.MavenProject;
 
+import com.taskadapter.redmineapi.bean.Issue;
 import com.taskadapter.redmineapi.bean.Project;
 import com.taskadapter.redmineapi.bean.Tracker;
 import com.taskadapter.redmineapi.bean.User;
@@ -13,7 +14,19 @@ public class Utils {
 		System.out.println(stringBuilder);
 	}
 
+	public static String toString(Issue issue) {
+		if (issue == null)
+			return "null";
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(issue.toString());
+		stringBuilder.append(", targeted version: ");
+		stringBuilder.append(Utils.toString(issue.getTargetVersion()));
+		return stringBuilder.toString();
+	}
+
 	public static String toString(Version version) {
+		if (version == null)
+			return "null";
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("Version name: ");
 		stringBuilder.append(version.getName());
@@ -62,30 +75,30 @@ public class Utils {
 		return version;
 	}
 
-	public static String toString(Project issue) {
+	public static String toString(Project project) {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("Project Name : ");
-		stringBuilder.append(issue.getName());
+		stringBuilder.append(project.getName());
 		stringBuilder.append(", Identifier : ");
-		stringBuilder.append(issue.getIdentifier());
+		stringBuilder.append(project.getIdentifier());
 		stringBuilder.append(", Id : ");
-		stringBuilder.append(issue.getId());
+		stringBuilder.append(project.getId());
 		stringBuilder.append(", Description : ");
-		stringBuilder.append(issue.getDescription());
+		stringBuilder.append(project.getDescription());
 		stringBuilder.append(", CreatedOn : ");
-		stringBuilder.append(issue.getCreatedOn());
+		stringBuilder.append(project.getCreatedOn());
 		stringBuilder.append(", Homepage : ");
-		stringBuilder.append(issue.getHomepage());
+		stringBuilder.append(project.getHomepage());
 		stringBuilder.append(", ParentId : ");
-		stringBuilder.append(issue.getParentId());
+		stringBuilder.append(project.getParentId());
 		stringBuilder.append(", Trackers : [");
-		if (issue.getTrackers() != null) {
-			for (Tracker tracker : issue.getTrackers()) {
+		if (project.getTrackers() != null) {
+			for (Tracker tracker : project.getTrackers()) {
 				stringBuilder.append(Utils.toString(tracker) + ",");
 			}
 		}
 		stringBuilder.append("], UpdatedOn : ");
-		stringBuilder.append(issue.getUpdatedOn());
+		stringBuilder.append(project.getUpdatedOn());
 		return stringBuilder.toString();
 	}
 
