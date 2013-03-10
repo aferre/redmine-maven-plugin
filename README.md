@@ -15,6 +15,8 @@ It's a good thing to have the following property defined for a project tied to r
 <redmine.projectId>...</redmine.projectId>
 ```
 
+Personnaly I define them as properties in a super pom with a bunch of other different properties to make it handier.
+
 Examples:
 ```
 <plugin>
@@ -37,14 +39,23 @@ Examples:
 				</executions>
 			</plugin>
 ```
-Prints projects:
 
-Prints versions:
+*	List all projects:
 
-Create version:
+```
+mvn redmine:list-projects -Dredmine.apiKey=API_KEY -Dredmine.hostUrl=REDMINE_URL -Dredmine.all=true
+```
 
-Close version:
+*	Prints versions:
 
-Remove version:
 
-Create project:
+*	Create version:
+
+
+*	Close version:
+
+
+*	Remove version:
+
+
+*	Create project:
