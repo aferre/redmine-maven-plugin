@@ -59,3 +59,7 @@ mvn redmine:list-projects -Dredmine.apiKey=API_KEY -Dredmine.hostUrl=REDMINE_URL
 
 
 *	Create project:
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/aferre/redmine-maven-plugin/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
