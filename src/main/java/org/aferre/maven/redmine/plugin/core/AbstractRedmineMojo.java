@@ -94,10 +94,10 @@ public abstract class AbstractRedmineMojo extends AbstractMojo {
 			getLog().info("Redmine project identifier: " + projectId);
 			getLog().info("DryRun: " + dryRun);
 			getLog().info("Interactive: " + interactive);
-
+			getLog().info("AbortOnError: " + abortOnError);
 			if (apiKey != null)
 				getLog().info("Using apikey for authentication.");
-			getLog().info("AbortOnError: " + abortOnError);
+
 		}
 	}
 }

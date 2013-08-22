@@ -63,6 +63,11 @@ public class Utils {
 		return getVersion(project.getVersion());
 	}
 
+	public static String getVersion(Version v) {
+		String version = v.getName();
+		return getVersion(version);
+	}
+
 	public static String getVersion(String project) {
 		String version = project;
 

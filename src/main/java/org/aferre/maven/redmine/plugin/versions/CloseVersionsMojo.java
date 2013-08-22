@@ -3,7 +3,9 @@ package org.aferre.maven.redmine.plugin.versions;
 import java.net.URL;
 import java.util.List;
 
+import org.aferre.maven.redmine.plugin.core.AbstractRedmineMojo;
 import org.aferre.maven.redmine.plugin.core.Utils;
+import org.aferre.maven.redmine.plugin.issues.MoveIssuesMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -22,7 +24,7 @@ import com.taskadapter.redmineapi.bean.Version;
  */
 @Mojo(name = "close-versions")
 public class CloseVersionsMojo extends AbstractRedmineVersionsMojo {
-	
+
 	protected CloseVersionsMojo() {
 		super();
 	}
@@ -33,7 +35,6 @@ public class CloseVersionsMojo extends AbstractRedmineVersionsMojo {
 			Boolean all) {
 		super(mavenProject, hostUrl, apiKey, dryRun, abortOnError, projectId,
 				interactive, projectIds, all);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -44,6 +45,7 @@ public class CloseVersionsMojo extends AbstractRedmineVersionsMojo {
 
 	/**
 	 * @parameter expression="${redmine.nextVersionForIssues}"
+	 *            default-value=null
 	 */
 	public String nextVersionForIssues;
 
@@ -103,8 +105,7 @@ public class CloseVersionsMojo extends AbstractRedmineVersionsMojo {
 			throws RedmineException {
 		Project project = mgr.getProjectByKey(projectName);
 		List<Version> versions = getVersions(mgr, project);
-		Version known = null;
-		Version vclosed = null;
+		Version versionToBeClosed = null;
 		Version vnextForIssues = null;
 		String toBeCLosed = Utils.getVersion(this.version);
 		for (Version version : versions) {
@@ -113,8 +114,9 @@ public class CloseVersionsMojo extends AbstractRedmineVersionsMojo {
 				if (getLog().isInfoEnabled()) {
 					getLog().info("Version " + name + " found, closing it.");
 				}
-				known = version;
-			} else if (name.equals(nextVersionForIssues)) {
+				versionToBeClosed = version;
+			} else if (nextVersionForIssues != null
+					&& name.equals(nextVersionForIssues)) {
 				if (getLog().isInfoEnabled()) {
 					getLog().info(
 							"Version " + name
@@ -123,7 +125,7 @@ public class CloseVersionsMojo extends AbstractRedmineVersionsMojo {
 				vnextForIssues = version;
 			}
 		}
-		if (known == null) {
+		if (versionToBeClosed == null) {
 			if (getLog().isErrorEnabled()) {
 				getLog().error("Version does not exist.");
 			}
@@ -131,11 +133,12 @@ public class CloseVersionsMojo extends AbstractRedmineVersionsMojo {
 
 			}
 		} else {
-			if (known.getStatus() != null && known.getStatus().equals("closed")) {
+			if (versionToBeClosed.getStatus() != null
+					&& versionToBeClosed.getStatus().equals("closed")) {
 				if (getLog().isInfoEnabled()) {
 					getLog().info(
 							"Version "
-									+ known.getName()
+									+ versionToBeClosed.getName()
 									+ " already closed, checking if issues are correctly moved.");
 				}
 				if (this.nextVersionForIssues != null
@@ -155,31 +158,31 @@ public class CloseVersionsMojo extends AbstractRedmineVersionsMojo {
 									"Trying to move issues to version =>  "
 											+ Utils.toString(vnextForIssues));
 						}
-						moveIssues(mgr, project, vclosed, vnextForIssues);
+						moveIssues(mgr, project, versionToBeClosed,
+								vnextForIssues, moveOrphans);
 					}
 				}
 			} else {
-				vclosed = known;
-				known.setStatus("closed");
-				mgr.update(known);
+				versionToBeClosed.setStatus("closed");
+				mgr.update(versionToBeClosed);
 				if (getLog().isInfoEnabled()) {
 					getLog().info(
 							"Closed version " + toBeCLosed
 									+ ", checking against server.");
 				}
 				versions = getVersions(mgr, project);
-				known = null;
+				versionToBeClosed = null;
 				for (Version version : versions) {
 					String name = version.getName();
 					if (name.equals(toBeCLosed)) {
 						if (getLog().isInfoEnabled()) {
 							getLog().info("Version  " + name + " found.");
 						}
-						known = version;
+						versionToBeClosed = version;
 						break;
 					}
 				}
-				if (known == null) {
+				if (versionToBeClosed == null) {
 					if (getLog().isInfoEnabled()) {
 						getLog().info(
 								"Version does not exist after being closed :o");
@@ -188,8 +191,8 @@ public class CloseVersionsMojo extends AbstractRedmineVersionsMojo {
 
 					}
 				} else {
-					if (known.getStatus() != null
-							&& known.getStatus().equals("closed")) {
+					if (versionToBeClosed.getStatus() != null
+							&& versionToBeClosed.getStatus().equals("closed")) {
 						if (getLog().isInfoEnabled()) {
 							getLog().info("Succesfully closed version");
 						}
@@ -212,15 +215,15 @@ public class CloseVersionsMojo extends AbstractRedmineVersionsMojo {
 											"Moving issues to "
 													+ Utils.toString(vnextForIssues));
 								}
-								moveIssues(mgr, project, vclosed,
-										vnextForIssues);
+								moveIssues(mgr, project, versionToBeClosed,
+										vnextForIssues, moveOrphans);
 							}
 						}
 					} else {
 						if (getLog().isInfoEnabled()) {
 							getLog().info(
 									"Something went wrong, status is now "
-											+ known.getStatus());
+											+ versionToBeClosed.getStatus());
 						}
 					}
 
@@ -230,62 +233,17 @@ public class CloseVersionsMojo extends AbstractRedmineVersionsMojo {
 
 	}
 
-	private void moveOrphanedIssues(RedmineManager mgr, Project proj,
-			Version vclosed, Version moveTo) throws RedmineException {
+	private void moveIssues(RedmineManager mgr, Project proj,
+			Version fromVersion, Version moveTo, boolean moveOrphans)
+			throws RedmineException {
+
+		MoveIssuesMojo mojo = new MoveIssuesMojo((AbstractRedmineMojo) this);
+
 		List<Issue> issues = mgr.getIssues(proj.getIdentifier(), null);
 
-		for (Issue issue : issues) {
-			moveOrphanedIssue(mgr, moveTo, issue);
-		}
-	}
+		mojo.moveIssues(mgr, proj, issues, fromVersion, moveTo, moveOrphans,
+				false);
 
-	private void moveOrphanedIssue(RedmineManager mgr, Version moveTo,
-			Issue issue) throws RedmineException {
-		if (issue.getTargetVersion() == null) {
-			issue.setTargetVersion(moveTo);
-			mgr.update(issue);
-			if (getLog().isDebugEnabled()) {
-				getLog().debug("Moved oprhaned issue.");
-			}
-		}
-	}
-
-	private void moveIssues(RedmineManager mgr, Project proj, Version vclosed,
-			Version moveTo) throws RedmineException {
-		List<Issue> issues = mgr.getIssues(proj.getIdentifier(), null);
-
-		for (Issue issue : issues) {
-			if (issue.getTargetVersion() != null) {
-				if (issue.getTargetVersion().getName()
-						.equals(vclosed.getName())) {
-
-					String statusName = issue.getStatusName();
-					if (statusName.equals("Closed")
-							|| statusName.equals("Rejected")) {
-
-						if (getLog().isDebugEnabled()) {
-							getLog().debug(
-									"Issue is " + statusName
-											+ ", not moving it.");
-						}
-
-					} else {
-						issue.setTargetVersion(moveTo);
-						if (getLog().isDebugEnabled()) {
-							getLog().debug("Moved issue.");
-						}
-						mgr.update(issue);
-					}
-				}
-			} else {
-				if (getLog().isDebugEnabled()) {
-					getLog().debug("Orphaned issue.");
-				}
-				if (moveOrphans) {
-					moveOrphanedIssue(mgr, moveTo, issue);
-				}
-			}
-		}
 	}
 
 }
