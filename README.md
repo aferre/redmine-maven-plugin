@@ -2,6 +2,7 @@ maven-redmine-plugin
 ====================
 
 [![Build Status](https://travis-ci.org/aferre/redmine-maven-plugin.png?branch=master)](https://travis-ci.org/aferre/redmine-maven-plugin)
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/aferre/redmine-maven-plugin/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
 Maven plugin for redmine REST API, using https://github.com/taskadapter/redmine-java-api
 
@@ -63,5 +64,4 @@ mvn redmine:list-projects -Dredmine.apiKey=API_KEY -Dredmine.hostUrl=REDMINE_URL
 *	Create project:
 
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/aferre/redmine-maven-plugin/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
