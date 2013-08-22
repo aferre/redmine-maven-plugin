@@ -1,6 +1,8 @@
 maven-redmine-plugin
 ====================
 
+[![Build Status](https://travis-ci.org/aferre/redmine-maven-plugin.png?branch=master)](https://travis-ci.org/aferre/redmine-maven-plugin)
+
 Maven plugin for redmine REST API, using https://github.com/taskadapter/redmine-java-api
 
 
